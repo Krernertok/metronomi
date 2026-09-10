@@ -1,79 +1,43 @@
-import { useState, useEffect } from 'react';
+import { Button, TextField } from '@mui/material';
+import { useMetronome } from '../hooks/useMetronome.tsx';
 
-export function Metronome({ initialBpm }: { initialBpm: number }) {
-  const [bpm, setBpm] = useState(initialBpm ?? 80);
-  const [isPlaying, setIsPlaying] = useState(false);
 
-  useEffect(() => {
-    if (isPlaying) {
-      const ctx = new AudioContext();
-      const frequency = 60.0 / bpm;
-      let nextClickTiming = ctx.currentTime;
-      let timeoutId: ReturnType<typeof setTimeout>;
+const DEFAULT_BPM = 80;
 
-      function scheduleClick() {
-        while (nextClickTiming < (ctx.currentTime + 0.1)) {
-          click(nextClickTiming);
-          nextClickTiming += frequency;
-        }
 
-        timeoutId = setTimeout(scheduleClick, 25);
-      }
+export function Metronome() {
+  const { bpm, setBpm, isPlaying, setIsPlaying } = useMetronome(DEFAULT_BPM);
 
-      function click(nextClick: number) {
-        if (ctx === null) return;
+  function onTextFieldChange(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
+    const nextBpm = Number(e.target.value);
+    const bpmIsNumber = !Number.isNaN(nextBpm);
 
-        const oscillator = ctx.createOscillator();
-        oscillator.connect(ctx.destination);
-
-        oscillator.start(nextClick);
-        oscillator.stop(nextClick + 0.05);
-      }
-
-      async function resumeAudioContext() {
-        await ctx.resume();
-      }
-
-      async function closeAudioContext() {
-        await ctx.close();
-      }
-
-      // audio context is suspended by default and must be resumed manually
-      void resumeAudioContext().catch(err => {
-        console.log(`Error when resuming audio context: ${err}`)
-      })
-
-      scheduleClick();
-
-      return () => {
-        void closeAudioContext();
-        clearTimeout(timeoutId);
-      };
+    if (bpmIsNumber && nextBpm > 0 && nextBpm <= 320) {
+      setBpm(Number(e.target.value))
     }
-  }, [isPlaying, bpm]);
+  }
 
+  function incrementBpm() {
+    if (bpm < 320) setBpm(bpm + 1);
+  }
+
+  function decrementBpm() {
+    if (bpm > 1) setBpm(bpm - 1);
+  }
+
+  function toggleIsPlaying() {
+    setIsPlaying(!isPlaying);
+  }
 
   return (
     <>
       <div>
-        <div> {bpm} </div>
-        <input value={bpm} onChange={(e) => {
-          const nextBpm = Number(e.target.value);
-          if (!Number.isNaN(nextBpm) && nextBpm > 0 && nextBpm <= 320) {
-            setBpm(Number(e.target.value))
-          }
-        }} />
-        <button onClick={() => {
-          if (bpm < 320) setBpm(bpm + 1);
-        }}> + </button>
-        <button onClick={() => {
-          if (bpm > 1) setBpm(bpm - 1);
-        }}> - </button>
+        <TextField value={bpm} onChange={onTextFieldChange} />
+        <Button onClick={decrementBpm}> - </Button>
+        <Button onClick={incrementBpm}> + </Button>
       </div>
       <div>
-        <button onClick={() => {
-          setIsPlaying(!isPlaying);
-        }}>{isPlaying ? 'Stop' : 'Play'}</button>
+        <Button onClick={toggleIsPlaying}>{isPlaying ? 'Stop' : 'Play'}</Button>
       </div>
     </>
   );

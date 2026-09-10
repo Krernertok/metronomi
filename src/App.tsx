@@ -1,11 +1,21 @@
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { Metronome } from './components/Metronome.tsx';
 
+const baseTheme = createTheme({
+  typography: {
+    fontFamily: [
+      'Quicksand',
+      'sans-serif',
+    ].join(','),
+  }
+});
+
 function App() {
-
-  const initialBpm = 80;
-
   return (
-    <Metronome initialBpm={ initialBpm } />
+    <ThemeProvider theme={baseTheme}>
+      <CssBaseline />
+      <Metronome />
+    </ThemeProvider>
   )
 }
 
