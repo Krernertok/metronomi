@@ -1,5 +1,8 @@
-import { Button, TextField } from '@mui/material';
+import { Box, Button, Grid, Stack, TextField } from '@mui/material';
 import { useMetronome } from '../hooks/useMetronome.tsx';
+
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 
 const DEFAULT_BPM = 80;
@@ -30,15 +33,33 @@ export function Metronome() {
   }
 
   return (
-    <>
-      <div>
-        <TextField value={bpm} onChange={onTextFieldChange} />
-        <Button onClick={decrementBpm}> - </Button>
-        <Button onClick={incrementBpm}> + </Button>
-      </div>
-      <div>
-        <Button onClick={toggleIsPlaying}>{isPlaying ? 'Stop' : 'Play'}</Button>
-      </div>
-    </>
+
+    <Grid container sx={{ alignItems: 'center' }}>
+      <Grid size={12}>
+        <TextField
+          fullWidth={true}
+          sx={{
+            input: {
+              textAlign: 'center',
+            }
+          }}
+          value={bpm}
+          onChange={onTextFieldChange}
+          />
+      </Grid>
+      <Grid size={6}>
+        <Button fullWidth onClick={decrementBpm}>
+          <RemoveCircleIcon />
+        </Button>
+      </Grid>
+      <Grid size={6}>
+        <Button fullWidth onClick={incrementBpm}>
+          <AddCircleIcon />         
+        </Button>
+      </Grid>
+      <Grid size={12}>
+        <Button fullWidth variant='contained' onClick={toggleIsPlaying} >{isPlaying ? 'Stop' : 'Play'}</Button>
+      </Grid>
+    </Grid>
   );
 }
