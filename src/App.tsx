@@ -4,7 +4,7 @@ import { Metronome } from './components/Metronome.tsx';
 const baseTheme = createTheme({
   typography: {
     fontFamily: [
-      'Quicksand',
+      'Quicksand Variable',
       'sans-serif',
     ].join(','),
   }

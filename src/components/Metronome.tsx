@@ -1,11 +1,9 @@
-import { Box, Button, Grid, Stack, TextField } from '@mui/material';
+import { Box, Button, Stack, TextField } from '@mui/material';
 import { useMetronome } from '../hooks/useMetronome.tsx';
-
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 
 const DEFAULT_BPM = 80;
+const MAX_BPM = 320;
 
 
 export function Metronome() {
@@ -15,7 +13,7 @@ export function Metronome() {
     const nextBpm = Number(e.target.value);
     const bpmIsNumber = !Number.isNaN(nextBpm);
 
-    if (bpmIsNumber && nextBpm > 0 && nextBpm <= 320) {
+    if (bpmIsNumber && nextBpm > 0 && nextBpm <= MAX_BPM) {
       setBpm(Number(e.target.value))
     }
   }
@@ -33,33 +31,76 @@ export function Metronome() {
   }
 
   return (
-
-    <Grid container sx={{ alignItems: 'center' }}>
-      <Grid size={12}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        px: 2,
+      }}
+    >
+      <Stack
+        spacing={2}
+        sx={{
+          alignItems: 'center',
+          maxWidth: 600,
+          width: '100%',
+        }}
+      >
         <TextField
-          fullWidth={true}
-          sx={{
-            input: {
-              textAlign: 'center',
-            }
-          }}
+          variant='outlined'
           value={bpm}
+          sx={{
+            width: 400,
+
+            '& .MuiOutlinedInput-root': {
+              width: 400,
+              height: 400,
+              borderRadius: '50%',
+            },
+
+            '& input': {
+              fontSize: 150,
+              padding: 0,
+              textAlign: 'center',
+            },
+          }}
           onChange={onTextFieldChange}
-          />
-      </Grid>
-      <Grid size={6}>
-        <Button fullWidth onClick={decrementBpm}>
-          <RemoveCircleIcon />
-        </Button>
-      </Grid>
-      <Grid size={6}>
-        <Button fullWidth onClick={incrementBpm}>
-          <AddCircleIcon />         
-        </Button>
-      </Grid>
-      <Grid size={12}>
-        <Button fullWidth variant='contained' onClick={toggleIsPlaying} >{isPlaying ? 'Stop' : 'Play'}</Button>
-      </Grid>
-    </Grid>
+        />
+        <Stack direction='row' spacing={2} sx={{
+          justifyContent: 'center',
+          width: '100%',
+        }}
+        >
+          <Button
+            variant='contained'
+            fullWidth
+            sx={{
+              p: 1,
+              fontSize: 60
+            }}
+            onClick={decrementBpm}
+          >-</Button>
+          <Button
+            variant='contained'
+            fullWidth
+            sx={{
+              p: 1,
+              fontSize: 60
+            }}
+            onClick={incrementBpm}
+          >+</Button>
+        </Stack>
+        <Button
+          fullWidth
+          variant='outlined'
+          sx={{ 
+            fontSize: 80,
+          }}
+          onClick={toggleIsPlaying}
+        >{isPlaying ? 'Stop' : 'Play'}</Button>
+      </Stack>
+    </Box>
   );
 }

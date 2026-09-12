@@ -24,6 +24,8 @@ export function useMetronome(initialBpm: number) {
         if (ctx === null) return;
 
         const oscillator = ctx.createOscillator();
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 420;
         oscillator.connect(ctx.destination);
 
         oscillator.start(nextClick);
