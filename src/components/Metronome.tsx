@@ -1,15 +1,15 @@
-import { Box, Button, Stack, TextField } from '@mui/material';
+import { Box, Button, Slider, Stack, TextField } from '@mui/material';
 import { useMetronome } from '../hooks/useMetronome.tsx';
 
 
 const DEFAULT_BPM = 80;
-const MAX_BPM = 320;
+const MAX_BPM = 240;
 
 
 export function Metronome() {
   const { bpm, setBpm, isPlaying, setIsPlaying } = useMetronome(DEFAULT_BPM);
 
-  function onTextFieldChange(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
+  function handleTextFieldChange(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
     const nextBpm = Number(e.target.value);
     const bpmIsNumber = !Number.isNaN(nextBpm);
 
@@ -18,8 +18,15 @@ export function Metronome() {
     }
   }
 
+  function handleSliderChange(e: Event) {
+    if (e.target !== null) {
+      const eventTarget = e.target as HTMLInputElement;
+      setBpm(Number(eventTarget.value));
+    }
+  }
+
   function incrementBpm() {
-    if (bpm < 320) setBpm(bpm + 1);
+    if (bpm < MAX_BPM) setBpm(bpm + 1);
   }
 
   function decrementBpm() {
@@ -29,6 +36,9 @@ export function Metronome() {
   function toggleIsPlaying() {
     setIsPlaying(!isPlaying);
   }
+
+  // TODO: Slider between the -/+ buttons 
+  // TODO: Pulse the outline of the number inbut element with the metronome beat
 
   return (
     <Box
@@ -66,37 +76,48 @@ export function Metronome() {
               textAlign: 'center',
             },
           }}
-          onChange={onTextFieldChange}
+          onChange={handleTextFieldChange}
         />
         <Stack direction='row' spacing={2} sx={{
+          alignItems: 'center',
           justifyContent: 'center',
           width: '100%',
         }}
         >
           <Button
-            variant='contained'
-            fullWidth
-            sx={{
-              p: 1,
-              fontSize: 60
-            }}
             onClick={decrementBpm}
-          >-</Button>
-          <Button
-            variant='contained'
-            fullWidth
             sx={{
               p: 1,
-              fontSize: 60
+              fontSize: 20
             }}
+            variant='contained'
+          >-</Button>
+          <Slider
+            min={1}
+            max={MAX_BPM}
+            onChange={handleSliderChange}
+            sx={{
+              '& .MuiSlider-thumb': {
+                height: 30,
+                width: 30,
+              }
+            }}
+            value={bpm}
+          />
+          <Button
             onClick={incrementBpm}
+            sx={{
+              p: 1,
+              fontSize: 20,
+            }}
+            variant='contained'
           >+</Button>
         </Stack>
         <Button
           fullWidth
-          variant='outlined'
+          variant={isPlaying ? 'outlined' : 'contained'}
           sx={{ 
-            fontSize: 80,
+            fontSize: 60,
           }}
           onClick={toggleIsPlaying}
         >{isPlaying ? 'Stop' : 'Play'}</Button>
