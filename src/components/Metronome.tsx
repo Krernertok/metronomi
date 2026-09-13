@@ -77,6 +77,7 @@ export function Metronome() {
             },
           }}
           onChange={handleTextFieldChange}
+          onFocus={e => e.target.select()}
         />
         <Stack direction='row' spacing={2} sx={{
           alignItems: 'center',
@@ -116,8 +117,8 @@ export function Metronome() {
         <Button
           fullWidth
           variant={isPlaying ? 'outlined' : 'contained'}
-          sx={{ 
-            fontSize: 60,
+          sx={{
+            fontSize: 50,
           }}
           onClick={toggleIsPlaying}
         >{isPlaying ? 'Stop' : 'Play'}</Button>
