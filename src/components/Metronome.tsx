@@ -4,7 +4,7 @@ import { useMetronome } from '../hooks/useMetronome.tsx';
 
 const DEFAULT_BPM = 80;
 const MAX_BPM = 240;
-
+const MIN_BPM = 1;
 
 export function Metronome() {
   const { bpm, setBpm, isPlaying, setIsPlaying } = useMetronome(DEFAULT_BPM);
@@ -13,7 +13,7 @@ export function Metronome() {
     const nextBpm = Number(e.target.value);
     const bpmIsNumber = !Number.isNaN(nextBpm);
 
-    if (bpmIsNumber && nextBpm > 0 && nextBpm <= MAX_BPM) {
+    if (bpmIsNumber && nextBpm >= MIN_BPM && nextBpm <= MAX_BPM) {
       setBpm(Number(e.target.value))
     }
   }
@@ -30,15 +30,16 @@ export function Metronome() {
   }
 
   function decrementBpm() {
-    if (bpm > 1) setBpm(bpm - 1);
+    if (bpm > MIN_BPM) setBpm(bpm - 1);
   }
 
   function toggleIsPlaying() {
     setIsPlaying(!isPlaying);
   }
 
-  // TODO: Slider between the -/+ buttons 
+  // TODO: Fix issues with setting MIN_BPM to a sensible value like 40 (i.e. set value when unfocus triggers)
   // TODO: Pulse the outline of the number inbut element with the metronome beat
+  // TODO: Volume (i.e. gain) control for metronome
 
   return (
     <Box
@@ -94,7 +95,7 @@ export function Metronome() {
             variant='contained'
           >-</Button>
           <Slider
-            min={1}
+            min={MIN_BPM}
             max={MAX_BPM}
             onChange={handleSliderChange}
             sx={{
