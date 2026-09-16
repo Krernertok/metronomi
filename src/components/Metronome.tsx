@@ -1,5 +1,8 @@
-import { Box, Button, Slider, Stack, TextField } from '@mui/material';
+import { Box, Button, IconButton, Slider, Stack, TextField } from '@mui/material';
 import { useMetronome } from '../hooks/useMetronome.tsx';
+import { VolumeSlider } from './VolumeSlider.tsx';
+
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
 
 const DEFAULT_BPM = 80;
@@ -7,7 +10,7 @@ const MAX_BPM = 240;
 const MIN_BPM = 1;
 
 export function Metronome() {
-  const { bpm, setBpm, isPlaying, setIsPlaying } = useMetronome(DEFAULT_BPM);
+  const { bpm, setBpm, gain, setGain, isPlaying, setIsPlaying } = useMetronome(DEFAULT_BPM);
 
   function handleTextFieldChange(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
     const nextBpm = Number(e.target.value);
@@ -18,7 +21,7 @@ export function Metronome() {
     }
   }
 
-  function handleSliderChange(e: Event) {
+  function handleTempoSliderChange(e: Event) {
     if (e.target !== null) {
       const eventTarget = e.target as HTMLInputElement;
       setBpm(Number(eventTarget.value));
@@ -40,6 +43,7 @@ export function Metronome() {
   // TODO: Fix issues with setting MIN_BPM to a sensible value like 40 (i.e. set value when unfocus triggers)
   // TODO: Pulse the outline of the number inbut element with the metronome beat
   // TODO: Volume (i.e. gain) control for metronome
+  // TODO: Changing gain shouldn't reset the metronome beat
 
   return (
     <Box
@@ -59,6 +63,7 @@ export function Metronome() {
           width: '100%',
         }}
       >
+        <VolumeSlider volume={gain} setVolume={setGain} />
         <TextField
           variant='outlined'
           value={bpm}
@@ -97,7 +102,7 @@ export function Metronome() {
           <Slider
             min={MIN_BPM}
             max={MAX_BPM}
-            onChange={handleSliderChange}
+            onChange={handleTempoSliderChange}
             sx={{
               '& .MuiSlider-thumb': {
                 height: 30,

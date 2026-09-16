@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 
 export function useMetronome(initialBpm: number) {
   const [bpm, setBpm] = useState(initialBpm ?? 80);
+  const [gain, setGain] = useState(1);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const getGain = useEffectEvent(() => gain);
 
   useEffect(() => {
     if (isPlaying) {
@@ -26,7 +29,12 @@ export function useMetronome(initialBpm: number) {
         const oscillator = ctx.createOscillator();
         oscillator.type = 'sine';
         oscillator.frequency.value = 420;
-        oscillator.connect(ctx.destination);
+
+        const gainNode = ctx.createGain();
+        gainNode.gain.value = getGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
 
         oscillator.start(nextClick);
         oscillator.stop(nextClick + 0.05);
@@ -52,7 +60,7 @@ export function useMetronome(initialBpm: number) {
         clearTimeout(timeoutId);
       };
     }
-  }, [isPlaying, bpm]);
+  }, [bpm, isPlaying]);
 
-  return {bpm, setBpm, isPlaying, setIsPlaying};
+  return {bpm, setBpm, gain, setGain, isPlaying, setIsPlaying};
 }
