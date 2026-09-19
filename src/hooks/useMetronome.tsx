@@ -6,18 +6,19 @@ export function useMetronome(initialBpm: number) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const getGain = useEffectEvent(() => gain);
+  const getBpm = useEffectEvent(() => bpm);
 
   useEffect(() => {
     if (isPlaying) {
       const ctx = new AudioContext();
-      const frequency = 60.0 / bpm;
       let nextClickTiming = ctx.currentTime;
       let timeoutId: ReturnType<typeof setTimeout>;
 
       function scheduleClick() {
+        const period = 60.0 / getBpm();
         while (nextClickTiming < (ctx.currentTime + 0.1)) {
           click(nextClickTiming);
-          nextClickTiming += frequency;
+          nextClickTiming += period;
         }
 
         timeoutId = setTimeout(scheduleClick, 25);
@@ -60,7 +61,7 @@ export function useMetronome(initialBpm: number) {
         clearTimeout(timeoutId);
       };
     }
-  }, [bpm, isPlaying]);
+  }, [isPlaying]);
 
   return {bpm, setBpm, gain, setGain, isPlaying, setIsPlaying};
 }
