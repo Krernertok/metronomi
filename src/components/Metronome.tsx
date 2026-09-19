@@ -1,23 +1,24 @@
-import { Box, Button, IconButton, Slider, Stack, TextField } from '@mui/material';
+import { useState } from 'react';
+import { Box, Button, Slider, Stack, TextField } from '@mui/material';
 import { useMetronome } from '../hooks/useMetronome.tsx';
 import { VolumeSlider } from './VolumeSlider.tsx';
 
-import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-
-
 const DEFAULT_BPM = 80;
 const MAX_BPM = 240;
-const MIN_BPM = 1;
+const MIN_BPM = 30;
 
 export function Metronome() {
   const { bpm, setBpm, gain, setGain, isPlaying, setIsPlaying } = useMetronome(DEFAULT_BPM);
+  const [editableBpm, setEditableBpm] = useState(bpm);
 
-  function handleTextFieldChange(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
-    const nextBpm = Number(e.target.value);
+  function handleTextFieldBlur() {
+    const nextBpm = Number(editableBpm);
     const bpmIsNumber = !Number.isNaN(nextBpm);
 
     if (bpmIsNumber && nextBpm >= MIN_BPM && nextBpm <= MAX_BPM) {
-      setBpm(Number(e.target.value))
+      setBpm(nextBpm);
+    } else {
+      setEditableBpm(bpm);
     }
   }
 
@@ -40,10 +41,8 @@ export function Metronome() {
     setIsPlaying(!isPlaying);
   }
 
-  // TODO: Fix issues with setting MIN_BPM to a sensible value like 40 (i.e. set value when unfocus triggers)
+  // TODO: Add error message that bpm should be between min and max
   // TODO: Pulse the outline of the number inbut element with the metronome beat
-  // TODO: Volume (i.e. gain) control for metronome
-  // TODO: Changing gain shouldn't reset the metronome beat
 
   return (
     <Box
@@ -66,7 +65,7 @@ export function Metronome() {
         <VolumeSlider volume={gain} setVolume={setGain} />
         <TextField
           variant='outlined'
-          value={bpm}
+          value={editableBpm}
           sx={{
             width: 400,
 
@@ -82,8 +81,12 @@ export function Metronome() {
               textAlign: 'center',
             },
           }}
-          onChange={handleTextFieldChange}
-          onFocus={e => e.target.select()}
+          onChange={e => setEditableBpm(Number(e.target.value))}
+          onFocus={e => {
+            setEditableBpm(bpm);
+            e.target.select();
+          }}
+          onBlur={handleTextFieldBlur}
         />
         <Stack direction='row' spacing={2} sx={{
           alignItems: 'center',

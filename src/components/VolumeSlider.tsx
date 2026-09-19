@@ -8,7 +8,6 @@ export function VolumeSlider({ volume, setVolume }: { volume: number, setVolume:
     variant: 'popover',
   });
 
-  // TODO: clean it up
   function handleVolumeSliderChange(e: Event) {
     if (e.target !== null) {
       const eventTarget = e.target as HTMLInputElement;
