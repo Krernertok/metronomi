@@ -1,29 +1,23 @@
-import { useState } from 'react';
 import { TextField } from '@mui/material';
 
+import { useMetronomeContext, useMetronomeDispatchContext, } from '../context/MetronomeContext.tsx';
 
-export function MetronomeDisplay({ bpm, setBpm, min_value, max_value }:
-  { bpm: number, setBpm: (n: number) => void, min_value: number, max_value: number }) {
-  const [editableBpm, setEditableBpm] = useState(0);
-  if (editableBpm !== bpm) {
-    setEditableBpm(bpm);
-  }
 
-  function handleTextFieldBlur() {
-    const nextBpm = Number(editableBpm);
-    const bpmIsNumber = !Number.isNaN(nextBpm);
+export function MetronomeDisplay() {
+  const state = useMetronomeContext();
+  const dispatch = useMetronomeDispatchContext();
 
-    if (bpmIsNumber && nextBpm >= min_value && nextBpm <= max_value) {
-      setBpm(nextBpm);
-    } else {
-      setEditableBpm(bpm);
-    }
+  function handleTextFieldBlur(e: React.FocusEvent<HTMLInputElement>) {
+    dispatch({
+      type: 'SET_BPM',
+      value: e.target.value,
+    })
   }
 
   return (
     <TextField
       variant='outlined'
-      value={editableBpm}
+      value={state.displayValue}
       sx={{
         width: 400,
 
@@ -39,11 +33,8 @@ export function MetronomeDisplay({ bpm, setBpm, min_value, max_value }:
           textAlign: 'center',
         },
       }}
-      onChange={e => setEditableBpm(Number(e.target.value))}
-      onFocus={e => {
-        setEditableBpm(bpm);
-        e.target.select();
-      }}
+      onChange={e => dispatch({ type: 'SET_DISPLAY_VALUE', value: e.target.value})}
+      onFocus={e => e.target.select()}
       onBlur={handleTextFieldBlur}
     />
   );

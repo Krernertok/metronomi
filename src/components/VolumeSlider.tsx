@@ -1,9 +1,14 @@
-import { IconButton, Slider, Stack } from '@mui/material';
-import { bindHover, bindPopover, usePopupState } from 'material-ui-popup-state/hooks';
+import { IconButton, Slider, Stack, } from '@mui/material';
+import { bindHover, bindPopover, usePopupState, } from 'material-ui-popup-state/hooks';
 import HoverPopover from 'material-ui-popup-state/HoverPopover';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
-export function VolumeSlider({ volume, setVolume }: { volume: number, setVolume: (a: number) => void }) {
+import { useMetronomeContext, useMetronomeDispatchContext, } from '../context/MetronomeContext.tsx';
+
+export function VolumeSlider() {
+  const state = useMetronomeContext();
+  const dispatch = useMetronomeDispatchContext();
+
   const popupState = usePopupState({
     variant: 'popover',
   });
@@ -11,7 +16,10 @@ export function VolumeSlider({ volume, setVolume }: { volume: number, setVolume:
   function handleVolumeSliderChange(e: Event) {
     if (e.target !== null) {
       const eventTarget = e.target as HTMLInputElement;
-      setVolume(Number(eventTarget.value) / 100.0);
+      dispatch({
+        type: 'SET_VOLUME',
+        value: eventTarget.value,
+      });
     }
   }
 
@@ -47,7 +55,7 @@ export function VolumeSlider({ volume, setVolume }: { volume: number, setVolume:
           max={100}
           onChange={handleVolumeSliderChange}
           orientation='vertical'
-          value={volume * 100}
+          value={state.volume}
           size='small'
           sx={{
             height: '10vw',

@@ -1,5 +1,6 @@
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { Metronome } from './components/Metronome.tsx';
+import { MetronomeTheme, } from './context/MetronomeContext.tsx';
 
 const baseTheme = createTheme({
   typography: {
@@ -14,7 +15,9 @@ function App() {
   return (
     <ThemeProvider theme={baseTheme}>
       <CssBaseline />
-      <Metronome />
+      <MetronomeTheme>
+        <Metronome />
+      </MetronomeTheme>
     </ThemeProvider>
   )
 }

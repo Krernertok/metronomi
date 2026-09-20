@@ -1,15 +1,17 @@
-import { useEffect, useEffectEvent, useState } from 'react';
+import { useEffect, useEffectEvent, } from 'react';
+import type { MetronomeState } from '../components/MetronomeReducer.tsx';
 
-export function useMetronome(initialBpm: number) {
-  const [bpm, setBpm] = useState(initialBpm ?? 80);
-  const [gain, setGain] = useState(1);
-  const [isPlaying, setIsPlaying] = useState(false);
+export function useMetronome(state: MetronomeState) {
+  const getBpm = useEffectEvent(() => {
+    return state.bpm;
+  });
 
-  const getGain = useEffectEvent(() => gain);
-  const getBpm = useEffectEvent(() => bpm);
+  const getGain= useEffectEvent(() => {
+    return state.volume / 100.0;
+  });
 
   useEffect(() => {
-    if (isPlaying) {
+    if (state.isPlaying) {
       const ctx = new AudioContext();
       let nextClickTiming = ctx.currentTime;
       let timeoutId: ReturnType<typeof setTimeout>;
@@ -61,7 +63,5 @@ export function useMetronome(initialBpm: number) {
         clearTimeout(timeoutId);
       };
     }
-  }, [isPlaying]);
-
-  return {bpm, setBpm, gain, setGain, isPlaying, setIsPlaying};
+  }, [state.isPlaying]);
 }
