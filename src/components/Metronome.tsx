@@ -8,9 +8,12 @@ import { useMetronomeContext, } from '../context/MetronomeContext.tsx';
 import { PlayButton } from './PlayButton.tsx';
 
 export function Metronome() {
-  // TODO: Switch to using reducer to handle synchronization between changes in BPM and different components
   // TODO: Add error message that bpm should be between min and max
-  // TODO: Pulse the outline of the number inbut element with the metronome beat
+  // TODO: Pulse the outline of the number input element with the metronome beat
+  // TODO: Light and dark modes
+  // TODO: Practice journal
+  // TODO: Long press on buttons -> Increment/decrement continuously
+  // TODO: blur on Enter
   
   useMetronome(useMetronomeContext());
 

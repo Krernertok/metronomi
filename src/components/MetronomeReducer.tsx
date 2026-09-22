@@ -27,28 +27,30 @@ export const safeInitialState = {
 export function metronomeReducer(state: MetronomeState, action: MetronomeAction) {
   switch (action.type) {
     case 'SET_BPM': {
-      const isNotNumber = Number.isNaN(action.value);
-      const newBpm = Number(action.value);
+      const isNumeric = action.value !== '' && !isNaN(Number(action.value));
+      const newBpm = isNumeric ? Number(action.value) : 0;
       const isNotValidValue = newBpm < MIN_BPM || newBpm > MAX_BPM;
-      if (isNotNumber || isNotValidValue) {
+      if (!isNumeric || isNotValidValue) {
         return {
           ...state,
-          errorMsg: `Please input a number between ${MIN_BPM} and ${MAX_BPM}`
+          bpm: state.bpm,
+          displayValue: state.bpm,
+          errorMsg: `Please input a number between ${MIN_BPM} and ${MAX_BPM}.`
         };
       }
-      return { ...state, bpm: newBpm, displayValue: newBpm };
+      return { ...state, bpm: newBpm, displayValue: newBpm, errorMsg: ''};
     }
     case 'INCREMENT_BPM': {
       const newBpm = state.bpm + 1;
       if (newBpm <= MAX_BPM) {
-        return { ...state, bpm: newBpm, displayValue: newBpm };
+        return { ...state, bpm: newBpm, displayValue: newBpm, errorMsg: ''};
       }
       return { ...state };
     }
     case 'DECREMENT_BPM': {
       const newBpm = state.bpm - 1;
       if (newBpm >= MIN_BPM) {
-        return { ...state, bpm: newBpm, displayValue: newBpm };
+        return { ...state, bpm: newBpm, displayValue: newBpm, errorMsg: '' };
       }
       return { ...state };
     }

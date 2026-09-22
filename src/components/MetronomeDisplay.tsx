@@ -18,6 +18,8 @@ export function MetronomeDisplay() {
     <TextField
       variant='outlined'
       value={state.displayValue}
+      error={state.errorMsg !== ''}
+      helperText={state.errorMsg}
       sx={{
         width: 400,
 
@@ -31,6 +33,21 @@ export function MetronomeDisplay() {
           fontSize: 150,
           padding: 0,
           textAlign: 'center',
+        },
+
+        '&.MuiFormControl-root.MuiTextField-root': {
+          position: 'relative',
+          marginBottom: '24px',
+        },
+
+        '& .MuiFormHelperText-root': {
+          position: 'absolute',
+          bottom: '-35px',
+          left: 0, 
+          right: 0, 
+          marginInline: 'auto', 
+          width: 'fit-content',
+          fontSize: '14pt',
         },
       }}
       onChange={e => dispatch({ type: 'SET_DISPLAY_VALUE', value: e.target.value})}
