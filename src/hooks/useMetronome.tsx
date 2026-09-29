@@ -1,4 +1,5 @@
 import { useEffect, useEffectEvent, } from 'react';
+import { publishEvent } from '../components/MetronomeEvents.tsx';
 import type { MetronomeState } from '../components/MetronomeReducer.tsx';
 
 export function useMetronome(state: MetronomeState) {
@@ -20,6 +21,8 @@ export function useMetronome(state: MetronomeState) {
         const period = 60.0 / getBpm();
         while (nextClickTiming < (ctx.currentTime + 0.1)) {
           click(nextClickTiming);
+          publishEvent(nextClickTiming);
+
           nextClickTiming += period;
         }
 

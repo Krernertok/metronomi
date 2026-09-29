@@ -8,7 +8,6 @@ import { useMetronomeContext, } from '../context/MetronomeContext.tsx';
 import { PlayButton } from './PlayButton.tsx';
 
 export function Metronome() {
-  // TODO: Add error message that bpm should be between min and max
   // TODO: Pulse the outline of the number input element with the metronome beat
   // TODO: Light and dark modes
   // TODO: Practice journal
